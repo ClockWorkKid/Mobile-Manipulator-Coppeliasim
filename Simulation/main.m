@@ -9,9 +9,18 @@ bot = robot();
 if (bot.clientID > -1)
     disp('Connection to robot successful');
     
-    [~, ~, ~] = bot.initialize_robot();
-
-    bot.core_routine();
+    
+    [~, ~, ~, ~] = bot.initialize_robot();
+ 
+    % Demo door control
+    for i = 1:8
+        bot.control_door(i, 1);
+        pause(1);
+        bot.control_door(i, 0);
+        pause(1);
+    end
+    
+    % bot.core_routine();
     
     bot.terminate_robot();
     

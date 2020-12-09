@@ -26,23 +26,9 @@ Subprocesses
 
 function [] = core_routine(self) % NOT YET IMPLEMENTED, DEMO STRUCTURE
 
-    % figure()
+    figure()
     % demo code for going back and forth 5 times
     for i = 1:5 % change with while loop later
-        
-        tic
-        [wheel_velocity] = self.lfr_routine(1);
-        self.set_wheel_velocity(wheel_velocity);
-        
-        while (toc < 2)
-            self.update_cameras();
-            subplot(131), imshow(self.frame_left);
-            subplot(132), imshow(self.frame_front);
-            subplot(133), imshow(self.frame_right);
-            drawnow;
-        end
-        
-        % self.update_proximity();
         
         tic
         [wheel_velocity] = self.lfr_routine(-1);
@@ -50,9 +36,21 @@ function [] = core_routine(self) % NOT YET IMPLEMENTED, DEMO STRUCTURE
         
         while (toc < 2)
             self.update_cameras();
-            subplot(131), imshow(self.frame_left);
-            subplot(132), imshow(self.frame_front);
-            subplot(133), imshow(self.frame_right);
+            % self.save_images('D:/output_images');
+            imshow(self.frame_left);
+            drawnow;
+        end
+        
+        % self.update_proximity();
+        
+        tic
+        [wheel_velocity] = self.lfr_routine(1);
+        self.set_wheel_velocity(wheel_velocity);
+        
+        while (toc < 2)
+            self.update_cameras();
+            % self.save_images('D:/output_images');
+            imshow(self.frame_left);
             drawnow;
         end
         
