@@ -26,32 +26,42 @@ Subprocesses
 
 function [] = core_routine(self) % NOT YET IMPLEMENTED, DEMO STRUCTURE
 
-    figure()
+    % figure()
     % demo code for going back and forth 5 times
     for i = 1:5 % change with while loop later
         
         tic
-        self.update_cameras();
-        subplot(131), imshow(squeeze(bot.frames(1, :, :, :)));
-        subplot(132), imshow(squeeze(bot.frames(1, :, :, :)));
-        subplot(133), imshow(squeeze(bot.frames(1, :, :, :)));
-        drawnow;
-        disp(1/toc)
+        [wheel_velocity] = self.lfr_routine(1);
+        self.set_wheel_velocity(wheel_velocity);
+        
+        while (toc < 2)
+            self.update_cameras();
+            subplot(131), imshow(self.frame_left);
+            subplot(132), imshow(self.frame_front);
+            subplot(133), imshow(self.frame_right);
+            drawnow;
+        end
         
         % self.update_proximity();
         
-        [wheel_velocity] = self.lfr_routine(1);
-        self.set_wheel_velocity(wheel_velocity);
-        pause(2);
-        
+        tic
         [wheel_velocity] = self.lfr_routine(-1);
         self.set_wheel_velocity(wheel_velocity);
-        pause(2);
+        
+        while (toc < 2)
+            self.update_cameras();
+            subplot(131), imshow(self.frame_left);
+            subplot(132), imshow(self.frame_front);
+            subplot(133), imshow(self.frame_right);
+            drawnow;
+        end
+        
+        
         % [joint_target] = self.arm_routine();
         % self.set_joint_target(joint_target);
         
 
-        pause(0.05);
+        % pause(0.05); % Not needed when running blocking statements
 
     end
     

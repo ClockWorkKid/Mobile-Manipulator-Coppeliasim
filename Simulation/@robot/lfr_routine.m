@@ -14,17 +14,5 @@ function [wheel_velocity] = lfr_routine(self, destination)
     % angVel= -gain_factor*(auxData(i,11)-thresold);
     % wL=(-Linear_vel-b*angVel)/0.5;
     % wR=(-Linear_vel+b*angVel)/0.5;
-    %
-    % From Coppeliasim script
-    %
-    % sim.setJointTargetVelocity(wheelJoints[1],-forwBackVel-leftRightVel-rotVel)
-    % sim.setJointTargetVelocity(wheelJoints[2],-forwBackVel+leftRightVel-rotVel)
-    % sim.setJointTargetVelocity(wheelJoints[3],-forwBackVel-leftRightVel+rotVel)
-    % sim.setJointTargetVelocity(wheelJoints[4],-forwBackVel+leftRightVel+rotVel)
-    %
-    % sim.simxSetJointTargetVelocity(clientID,Wheeljoints_Handles(1),,sim.simx_opmode_blocking);
-    % sim.simxSetJointTargetVelocity(clientID,Wheeljoints_Handles(2),,sim.simx_opmode_blocking);
-    % sim.simxSetJointTargetVelocity(clientID,Wheeljoints_Handles(3),,sim.simx_opmode_blocking);
-    % sim.simxSetJointTargetVelocity(clientID,Wheeljoints_Handles(4),,sim.simx_opmode_blocking);
 
 end

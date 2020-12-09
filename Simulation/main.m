@@ -27,3 +27,4 @@ bot.destructor();
 
 disp('Connection terminated');
 
+close all

@@ -8,7 +8,10 @@ classdef robot < handle
         cameras
         proximity
         
-        frames
+        frame_left
+        frame_front
+        frame_right
+        
         resolution
     end
     
@@ -51,18 +54,17 @@ classdef robot < handle
             disp("Wheel motor handles: " + num2str(self.motors));
             
             % Initialize cameras
-            camera_names = ["Vision_front", "Vision_left", "Vision_right"];
+            camera_names = ["Vision_left", "Vision_front", "Vision_right"];
             
             for i=1:length(self.cameras)
                 [cam_ret_code(i), self.cameras(i)] = self.sim.simxGetObjectHandle(self.clientID,uint8(char(camera_names(i))),self.sim.simx_opmode_blocking);
+                [~, self.resolution, ~] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(i), 0, self.sim.simx_opmode_streaming);
             end
-            
-            [~, self.resolution, ~] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(1), 0, self.sim.simx_opmode_blocking);
-            
+                     
             disp("Camera handles: " + num2str(self.cameras));
             disp("Camera resolutions: " + num2str(self.resolution));
-            self.frames = zeros([length(self.cameras), self.resolution, 3]);
-                 
+
+   
             % Initialize proximity
             
             % Initialize joints
@@ -77,9 +79,10 @@ classdef robot < handle
         % Update images from the cameras (NOT YET IMPLEMENTED)
         function [ret_code] = update_cameras(self)
             ret_code = zeros(size(self.cameras));
-            for i=1:length(self.cameras)
-                [ret_code(i), ~ , self.frames(i, :, :, :)] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(i), 0, self.sim.simx_opmode_blocking);
-            end
+   
+            [ret_code(1), ~ , self.frame_left] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(1), 0, self.sim.simx_opmode_buffer);
+            [ret_code(2), ~ , self.frame_front] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(2), 0, self.sim.simx_opmode_buffer);
+            [ret_code(3), ~ , self.frame_right] = self.sim.simxGetVisionSensorImage2(self.clientID, self.cameras(3), 0, self.sim.simx_opmode_buffer);
         end
         
         % Update proximity data (NOT YET IMPLEMENTED)
@@ -108,7 +111,6 @@ classdef robot < handle
             end
 
         end
-        
         
         % functions defined in seperate files
         core_routine(self)
