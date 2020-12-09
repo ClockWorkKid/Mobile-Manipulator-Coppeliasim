@@ -1,0 +1,37 @@
+clear all; close all; clc;
+
+%% Initialization
+
+bot = robot;
+
+sim = remApi('remoteApi');
+sim.simxFinish(-1);
+clientID = sim.simxStart('127.0.0.1',19999,true,true,5000,5);
+
+%% Connection to Coppeliasim
+
+if (clientID>-1)
+    disp('Connection to robot successful');
+    
+    [motor, joint, camera] = initialize_robot(sim, clientID);
+    
+    vel_linear = -3;
+    
+    [fl_speed, rl_speed, rr_speed, fr_speed] = deal(vel_linear);
+    velvector = [fl_speed, rl_speed, rr_speed, fr_speed];
+    
+    for i=1:4
+        [~] = sim.simxSetJointTargetVelocity(clientID ,motor(i), velvector(i), sim.simx_opmode_blocking);
+    end
+    
+    core_routine();
+    
+    sim.simxFinish(clientID);
+else
+    disp('Failed connecting to remote API server');
+end
+
+sim.delete(); % call the destructor!
+
+disp('Program terminated');
+

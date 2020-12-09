@@ -1,0 +1,37 @@
+%{
+
+The core routine runs a while loop. This routine handles all the necessary
+inputs and outputs of the robot. This routine also holds the core control
+structure of the robot (what to do, when to do, how to do)
+
+In each iteration of the core routine, image and proximity data will be
+recieved from the simulator, necessary sub-processes will be called, motor
+and joint commands will be sent back to the simulator
+
+Inputs:
+1. Vision sensor (Camera Images)
+2. Proximity sensor
+
+Outputs:
+1. Motor Velocity/Position
+2. Arm Joint angle
+
+Subprocesses 
+1. lfr_routine.m (INPUTS: image, proximity, destination OUTPUTS: motor)
+2. arm_routine.m (INPUTS: image, command(pick/place) OUTPUTS: joint angles)
+
+%}
+
+function [] = core_routine(self)
+
+i = 1;
+
+
+    while(1)
+        
+        i=i+1;
+        pause(0.05);
+
+    end
+
+end
