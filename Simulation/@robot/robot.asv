@@ -40,7 +40,7 @@ classdef robot < handle
         function [mot_ret_code, jnt_ret_code, cam_ret_code, prx_ret_code] = initialize_robot(self)
             
             self.motors = zeros(1,4);
-            self.joints = zeros(1, 7);
+            self.joints = zeros(1, 6);
             self.cameras = zeros(1, 3);
             self.proximity = zeros(1, 2);
             self.doors = zeros(1, 8);
@@ -83,7 +83,6 @@ classdef robot < handle
                 [~, self.joint_position(i)] = self.sim.simxGetJointPosition(self.clientID, self.joints(i), self.sim.simx_opmode_blocking);
             end
             disp("Arm joint handles: " + num2str(self.joints));
-            disp("Arm joint positions: " + num2str(self.joint_position));
         end
         
         % Disconnection from robot
@@ -134,24 +133,13 @@ classdef robot < handle
 
         end
         
-        % Send position commands to joint position handlers
+        % Send position commands to joint position handlers (NOT YET IMPLEMENTED)
         function [ret_code] = set_joint_position(self, joint_target)
 
-            ret_code = zeros(size(self.joints));
+            ret_code = zeros(size(self.joint));
 
             for i=1:length(self.joints)
-                [ret_code(i)] = self.sim.simxSetJointTargetPosition(self.clientID , self.joints(i), joint_target(i), self.sim.simx_opmode_blocking);
-            end
-
-        end
-        
-        % Update position feedback from joint position handlers
-        function [ret_code] = update_joint_position(self)
-
-            ret_code = zeros(size(self.joints));
-
-            for i=1:length(self.joints)
-                [ret_code(i), self.joint_position(i)] = self.sim.simxGetJointPosition(self.clientID , self.joints(i), self.sim.simx_opmode_blocking);
+                ret_code(i) = joint_target(i);
             end
 
         end

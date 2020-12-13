@@ -1,0 +1,57 @@
+clear all; close all; clc;
+
+%% Initialization
+
+bot = robot();
+
+%% Coppeliasim
+
+if (bot.clientID > -1)
+    disp('Connection to robot successful');
+    
+    
+    [~, ~, ~, ~] = bot.initialize_robot();
+ 
+
+    % demo_door(bot)
+    % demo_movement
+    
+    %
+    [~] = bot.update_joint_position();
+ 
+    angle = bot.joint_position + [0.5, 0, 0, 0, 0, 0, 0];
+    bot.set_joint_position(angle)
+    %
+   
+    bot.terminate_robot();
+    
+else
+    disp('Failed connecting to remote API server');
+end
+
+disp("Simulation ended");
+
+%% Termination
+
+bot.destructor();
+
+disp('Connection terminated');
+
+close all
+
+
+function [] = demo_door(bot)
+    %Demo door control
+    
+    for i = 1:8
+        bot.control_door(i, 1);
+        pause(1);
+        bot.control_door(i, 0);
+        pause(1);
+    end
+    
+end
+
+function [] = demo_movement(bot)
+
+end
