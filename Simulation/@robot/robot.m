@@ -2,6 +2,7 @@ classdef robot < handle
     properties
         sim             % Connection to coppeliasim remote api
         clientID        % ID of current simulation
+        bot_ref         % Reference of robot model
         
         motors          % Handler for wheels
         joints          % Handler for arm joints
@@ -19,6 +20,9 @@ classdef robot < handle
         
         joint_angle     % the current absolute joint angles of robot arm
         joint_position  % linear translation between revolution joints (constant)
+        
+        fk              % forward kinematics symbolic function
+        J               % Jacobian for forward kinematics
     end
     
     methods
@@ -83,17 +87,24 @@ classdef robot < handle
             jnt_ret_code = zeros(size(joint_names));
             self.joints = zeros(size(joint_names));
             self.joint_angle = zeros(size(joint_names));
-            self.joint_position = zeros(4, 3);
+            self.joint_position = zeros(5, 3);
+            [~, self.bot_ref] = self.sim.simxGetObjectHandle(self.clientID,uint8(char("bot_ref")),self.sim.simx_opmode_blocking);
+            disp("Robot arm reference handle: " + num2str(self.bot_ref));
             for i=1:length(self.joints)
                 [jnt_ret_code(i), self.joints(i)] = self.sim.simxGetObjectHandle(self.clientID,uint8(char(joint_names(i))),self.sim.simx_opmode_blocking);
                 [~, self.joint_angle(i)] = self.sim.simxGetJointPosition(self.clientID, self.joints(i), self.sim.simx_opmode_blocking);
             end
+            [~, self.joint_position(1, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(1), self.bot_ref, self.sim.simx_opmode_blocking);
             for i = 1:4
-                [~, self.joint_position(i, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(i+1), self.joints(i), self.sim.simx_opmode_blocking);
+                [~, self.joint_position(i+1, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(i+1), self.joints(i), self.sim.simx_opmode_blocking);
             end
             disp("Arm joint handles: " + num2str(self.joints));
             disp("Arm joint angles: " + num2str(self.joint_angle));
             % disp("Arm link endpoints: " + num2str(self.joint_position));
+            [self.fk, self.J] = kinematics_symbolic(self);
+            disp(self.fk)
+            disp(self.J)
+            disp("Kinematic solvers initialized");
         end
         
         
@@ -157,9 +168,11 @@ classdef robot < handle
             ret_code = zeros(size(self.joints));
 
             for i=1:length(self.joints)
+                %if joint_target(i) > pi
+                %    joint_target(i) = 2*pi - joint_target(i)-2*pi;
+                %end
                 [ret_code(i)] = self.sim.simxSetJointTargetPosition(self.clientID , self.joints(i), joint_target(i), self.sim.simx_opmode_blocking);
             end
-
         end
         
         
@@ -178,7 +191,7 @@ classdef robot < handle
         % functions defined in seperate files
         core_routine(self)
         lfr_routine(self, destination)
-        [joint_target] = arm_routine(self, command)
+        arm_routine(self, command)
         
     end
 end
