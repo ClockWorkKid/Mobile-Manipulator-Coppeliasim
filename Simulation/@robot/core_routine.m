@@ -26,46 +26,34 @@ Subprocesses
 
 function [] = core_routine(self) % NOT YET IMPLEMENTED, DEMO STRUCTURE
 
-    figure()
     % demo code for going back and forth 5 times
     for i = 1:5 % change with while loop later
         
-        tic
-        [wheel_velocity] = self.lfr_routine(-1);
-        self.set_wheel_velocity(wheel_velocity);
+        dest_point = input('Which room? ', 's'); %Enter 'Red' to go to red room
         
-        while (toc < 2)
-            self.update_cameras();
-            % self.save_images('D:/output_images');
-            imshow(self.frame_left);
-            drawnow;
-        end
+        keyDest = {'Blue','Purple','Green','Cyan','Red','Olive'};
+        valueDest = [1 2 3 4 5 6];
+        valueReturn = [2 1 4 3 6 5];
         
-        % self.update_proximity();
+        Destination = containers.Map(keyDest,valueDest);
+        Return = containers.Map(keyDest, valueReturn);
         
-        tic
-        [wheel_velocity] = self.lfr_routine(1);
-        self.set_wheel_velocity(wheel_velocity);
+        %arm routine here to pick up medication
         
-        while (toc < 2)
-            self.update_cameras();
-            % self.save_images('D:/output_images');
-            imshow(self.frame_left);
-            drawnow;
-        end
+        %lfr routine here to go to room
+        self.lfr_routine(Destination(dest_point));
         
+        %arm routine here to put down medication
         
-        % [joint_target] = self.arm_routine();
-        % self.set_joint_target(joint_target);
-        
+        %180 turn at the end of forward pass
+        flip(self);
 
-        % pause(0.05); % Not needed when running blocking statements
+        %lfr routine here to return to reference point
+        self.lfr_routine(Return(dest_point));
+        
+        %180 turn turn at the end of backward pass
+        flip(self);
 
     end
-    
-    % Halt robot after 5 iterations
-    [wheel_velocity] = self.lfr_routine(0);
-    self.set_wheel_velocity(wheel_velocity);
-
 end
 
