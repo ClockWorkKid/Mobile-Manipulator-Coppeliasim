@@ -1,6 +1,5 @@
 function [del_theta] = inverse_kinematics(bot, del_displacement)
 
-    bot.update_joint_angle();
     theta1 = bot.joint_angle(1);
     theta2 = bot.joint_angle(2);
     theta3 = bot.joint_angle(3);

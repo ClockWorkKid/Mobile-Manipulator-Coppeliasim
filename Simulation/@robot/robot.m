@@ -3,6 +3,7 @@ classdef robot < handle
         sim             % Connection to coppeliasim remote api
         clientID        % ID of current simulation
         bot_ref         % Reference of robot model
+        end_ref         % Reference of end effector
         
         motors          % Handler for wheels
         joints          % Handler for arm joints
@@ -87,23 +88,30 @@ classdef robot < handle
             jnt_ret_code = zeros(size(joint_names));
             self.joints = zeros(size(joint_names));
             self.joint_angle = zeros(size(joint_names));
-            self.joint_position = zeros(5, 3);
-            [~, self.bot_ref] = self.sim.simxGetObjectHandle(self.clientID,uint8(char("bot_ref")),self.sim.simx_opmode_blocking);
-            disp("Robot arm reference handle: " + num2str(self.bot_ref));
+
             for i=1:length(self.joints)
                 [jnt_ret_code(i), self.joints(i)] = self.sim.simxGetObjectHandle(self.clientID,uint8(char(joint_names(i))),self.sim.simx_opmode_blocking);
                 [~, self.joint_angle(i)] = self.sim.simxGetJointPosition(self.clientID, self.joints(i), self.sim.simx_opmode_blocking);
             end
-            [~, self.joint_position(1, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(1), self.bot_ref, self.sim.simx_opmode_blocking);
-            for i = 1:4
-                [~, self.joint_position(i+1, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(i+1), self.joints(i), self.sim.simx_opmode_blocking);
-            end
+            
             disp("Arm joint handles: " + num2str(self.joints));
             disp("Arm joint angles: " + num2str(self.joint_angle));
-            % disp("Arm link endpoints: " + num2str(self.joint_position));
+            
+            % Getting link lengths
+            self.joint_position = zeros(5, 3);
+            [~, self.bot_ref] = self.sim.simxGetObjectHandle(self.clientID,uint8(char("bot_ref")),self.sim.simx_opmode_blocking);
+            [~, self.end_ref] = self.sim.simxGetObjectHandle(self.clientID,uint8(char("end_ref")),self.sim.simx_opmode_blocking);
+            disp("Robot arm reference handle: " + num2str(self.bot_ref));
+            disp("End effector reference handle: " + num2str(self.end_ref));
+            
+            [~, self.joint_position(1, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(1), self.bot_ref, self.sim.simx_opmode_blocking);
+            [~, self.joint_position(2, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(2), self.joints(1), self.sim.simx_opmode_blocking);
+            [~, self.joint_position(3, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(3), self.joints(2), self.sim.simx_opmode_blocking);
+            [~, self.joint_position(4, :)] = self.sim.simxGetObjectPosition(self.clientID , self.joints(4), self.joints(3), self.sim.simx_opmode_blocking);
+            [~, self.joint_position(5, :)] = self.sim.simxGetObjectPosition(self.clientID , self.end_ref, self.joints(4), self.sim.simx_opmode_blocking);
+
+            % Initializing forward and inverse kinematics calculator
             [self.fk, self.J] = kinematics_symbolic(self);
-            disp(self.fk)
-            disp(self.J)
             disp("Kinematic solvers initialized");
         end
         
