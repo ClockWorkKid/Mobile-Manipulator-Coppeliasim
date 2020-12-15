@@ -175,11 +175,8 @@ classdef robot < handle
 
             ret_code = zeros(size(self.joints));
 
-            for i=1:length(self.joints)
-                %if joint_target(i) > pi
-                %    joint_target(i) = 2*pi - joint_target(i)-2*pi;
-                %end
-                [ret_code(i)] = self.sim.simxSetJointTargetPosition(self.clientID , self.joints(i), joint_target(i), self.sim.simx_opmode_blocking);
+            for i=1:5
+                [ret_code(i)] = self.sim.simxSetJointTargetPosition(self.clientID , self.joints(i), joint_target(i), self.sim.simx_opmode_oneshot);
             end
         end
         
