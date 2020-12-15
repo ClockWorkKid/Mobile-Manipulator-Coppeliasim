@@ -7,27 +7,49 @@ function [] = arm_routine(self, command)
     if command == "pick"
         [~, object_position] = detect_object(self);   % find object position
         disp("Object at: " + num2str(object_position));
+        disp("Picking up object");
         % object_height = object_position(end);
         
         end_effector = forward_kinematics(self);      % find arm position
-        object_position(end)=end_effector(end)+0.02;  % for horizontal movement
+        object_position(end)=end_effector(end)+0.06;  % for horizontal movement
         move_arm(self, object_position);              % horizontally move arm to target
         
-        object_position(end) = object_position(end) - 0.12;
+        object_position(end) = object_position(end) - 0.16;
         move_arm(self, object_position);              % vertically move arm
         
         gripper(self, "hold");                        % grip on object
         
-        object_position(end) = object_position(end) + 0.12;
+        object_position(end) = object_position(end) + 0.16;
         move_arm(self, object_position);              % vertically move arm
         
         self.joint_angle = [retracted_angles, self.joint_angle(5:7)];
         % disp("Return to" + num2str(self.joint_angle));
         self.set_joint_position(self.joint_angle);    % move to original position
-        pause(4);
+        pause(5);
         
         gripper(self, "release");                     % release object
+    
+    elseif command == "place"
+        disp("Placing object");
+        end_effector = forward_kinematics(self);      % find arm position
+        object_position = end_effector;
+        object_position(end)=object_position(end)-.06;% for vertical movement
+        move_arm(self, object_position);              % vertically move arm to target
+        
+        gripper(self, "hold");                        % grip on object
+
+        object_position(end)=object_position(end)+.06;% for vertical movement
+        move_arm(self, object_position);              % vertically move arm
+        move_arm(self, [-0.45 -0.25 0.1]);            % move to drop zone
+        pause(4);
+        gripper(self, "release");                     % release object
+        
+        self.joint_angle = [retracted_angles, self.joint_angle(5:7)];
+        % disp("Return to" + num2str(self.joint_angle));
+        self.set_joint_position(self.joint_angle);    % move to original position
+        pause(4);
     end
+    
 end
 
 function [] = move_arm(self, object_position)
@@ -59,13 +81,13 @@ end
 function [] = gripper(self, action)
 
     if action == "hold"
-        disp("Gripping object")
-        grip_size = 0.033;
+        % disp("Gripping object")
+        grip_size = 0.02;
         self.sim.simxSetJointTargetPosition(self.clientID , self.joints(6), +3.041e-02 - grip_size, self.sim.simx_opmode_oneshot);
         self.sim.simxSetJointTargetPosition(self.clientID , self.joints(7), -6.081e-02 + grip_size, self.sim.simx_opmode_oneshot);
         pause(2);
     elseif action == "release"
-        disp("Releasing object")
+        % disp("Releasing object")
         self.sim.simxSetJointTargetPosition(self.clientID , self.joints(6), +3.041e-02, self.sim.simx_opmode_oneshot);
         self.sim.simxSetJointTargetPosition(self.clientID , self.joints(7), -6.081e-02, self.sim.simx_opmode_oneshot);
         pause(2);

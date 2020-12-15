@@ -12,7 +12,7 @@ if (bot.clientID > -1)
  
     %bot.core_routine();
     bot.arm_routine("pick");
-    %bot.arm_routine("place");
+    bot.arm_routine("place");
     %demo_door(bot)
     %demo_movement(bot)
     %demo_arm(bot)
