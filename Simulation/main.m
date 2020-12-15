@@ -10,9 +10,9 @@ if (bot.clientID > -1)
     disp('Connection to robot successful');
     [~, ~, ~, ~] = bot.initialize_robot();
  
-    %bot.core_routine();
-    bot.arm_routine("pick");
-    bot.arm_routine("place");
+    bot.core_routine();
+    %bot.arm_routine("pick");
+    %bot.arm_routine("place");
     %demo_door(bot)
     %demo_movement(bot)
     %demo_arm(bot)

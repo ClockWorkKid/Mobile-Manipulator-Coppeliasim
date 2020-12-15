@@ -39,13 +39,13 @@ function [] = core_routine(self) % NOT YET IMPLEMENTED, DEMO STRUCTURE
         Return = containers.Map(keyDest, valueReturn);
         
         %arm routine here to pick up medication
-        %self.arm_routine("pick");
+        self.arm_routine("pick");
     
         %lfr routine here to go to room
         self.lfr_routine(Destination(dest_point));
         
         %arm routine here to put down medication
-        %self.arm_routine("place");
+        self.arm_routine("place");
         
         %180 turn at the end of forward pass
         flip(self);
