@@ -14,14 +14,14 @@ sumS = sum(sValues);
 
 %if no sensor is on the line then return 10, otherwise calculate error
 if (sumS==0)
-    error=10; % otherwise 10 not possible because of discontinuity
+    error=10; 
 else %Calculate line position
     sumWS = sValues(1)*10 + sValues(2)*20 + sValues(3)*30 + sValues(4)*40 + sValues(5)*50;
     linepos = sumWS/sumS;
     error = linepos - 30;
 end
 
-%Keep track of which on of the two extreme sensors was on the line, 1 == Leftmost sensor, 2 == rightmost sensor
+%Keep track of which one of the two extreme sensors was on the line, 1 == Leftmost sensor, 2 == rightmost sensor
 if(sValues(1) == 1 && sValues(3) == 1 && sValues(5) == 1)
     lastSensor = 3;
 elseif(sValues(5) == 1)

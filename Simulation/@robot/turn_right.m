@@ -12,7 +12,7 @@ function [] = turn_right(self)
 %anymore
 while true
     self.set_wheel_velocity([3.5,3.5,3.5,3.5]);
-    pause(4);
+    pause(2);
     sValues = readSensor(self);
     [error, lastSensor] = calculate_error(self, sValues);
     if lastSensor~=3

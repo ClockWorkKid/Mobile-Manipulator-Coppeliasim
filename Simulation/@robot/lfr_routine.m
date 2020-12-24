@@ -48,7 +48,7 @@ while true
         %control based on error
         if (error==10)
             if (lastSensor==1)
-                self.set_wheel_velocity([2,2,-2,-2]);
+                self.set_wheel_velocity([2,2,-2,-2]); %first two values for right wheels
             elseif(lastSensor==2)
                 self.set_wheel_velocity([-2,-2,2,2]);
             elseif(lastSensor==0)
