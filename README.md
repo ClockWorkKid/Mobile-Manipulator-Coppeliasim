@@ -5,6 +5,8 @@ Control systems simulation project for Course EEE 318 (Control systems laborator
 - [Softwares Used](#softwares-used)
 - [Simulation Environment](#simulation-environment)
 - [Robot Model](#robot-model)
+- [Manipulator Operation](#manipulator-operation)
+- [Mobile Robot Operation](#mobile-robot-operation)
 - [Team](#team)
 
 ## Softwares Used
