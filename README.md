@@ -1,5 +1,9 @@
-# Hospital-Service-Robot
+# Mobile Manipulator Simulation Project on Coppeliasim
+Simulation of a robot capable of providing service inside a hospital environment.
 Control systems simulation project for Course EEE 318 (Control systems laboratory)
+
+Manipulator Operation: https://youtu.be/CH-W094m49Q
+Full operation: https://youtu.be/Flqc70CrP4c
 
 ## Contents
 - [Softwares Used](#softwares-used)
