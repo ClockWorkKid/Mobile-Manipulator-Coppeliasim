@@ -3,6 +3,8 @@ Simulation of a robot capable of providing service inside a hospital environment
 Control systems simulation project for Course EEE 318 (Control systems laboratory)
 
 Manipulator Operation: https://youtu.be/CH-W094m49Q
+[<img src="https://i.ytimg.com/vi/CH-W094m49Q/maxresdefault.jpg" width="50%">](https://youtu.be/CH-W094m49Q "Now in Android: 55")
+
 
 Full operation: https://youtu.be/Flqc70CrP4c
 
